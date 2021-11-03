@@ -71,7 +71,7 @@ export const WETH = {
     '0xf1277d1Ed8AD466beddF92ef448A132661956621',
     18,
     'WFTM',
-    'Wrapped FTM',
+    'Wrapped Fantom',
     'https://www.fantom.foundation'
   ),
   [ChainId.TESTNET]: new Token(
