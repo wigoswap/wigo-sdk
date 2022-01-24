@@ -83,4 +83,3 @@ export const WETH = {
     'https://www.fantom.foundation'
   )
 }
-
