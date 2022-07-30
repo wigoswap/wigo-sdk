@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
 import _Decimal from 'decimal.js-light'
-import _Big, { RoundingMode } from 'big.js'
+import _Big from 'big.js'
 import toFormat from 'toformat'
 
 import { BigintIsh, Rounding } from '../../constants'
@@ -14,13 +14,35 @@ const Big = toFormat(_Big)
 const toSignificantRounding = {
   [Rounding.ROUND_DOWN]: Decimal.ROUND_DOWN,
   [Rounding.ROUND_HALF_UP]: Decimal.ROUND_HALF_UP,
-  [Rounding.ROUND_UP]: Decimal.ROUND_UP
+  [Rounding.ROUND_UP]: Decimal.ROUND_UP,
+}
+
+const enum RoundingMode {
+  /**
+   * Rounds towards zero.
+   * I.e. truncate, no rounding.
+   */
+  RoundDown = 0,
+  /**
+   * Rounds towards nearest neighbour.
+   * If equidistant, rounds away from zero.
+   */
+  RoundHalfUp = 1,
+  /**
+   * Rounds towards nearest neighbour.
+   * If equidistant, rounds towards even neighbour.
+   */
+  RoundHalfEven = 2,
+  /**
+   * Rounds away from zero.
+   */
+  RoundUp = 3,
 }
 
 const toFixedRounding = {
   [Rounding.ROUND_DOWN]: RoundingMode.RoundDown,
   [Rounding.ROUND_HALF_UP]: RoundingMode.RoundHalfUp,
-  [Rounding.ROUND_UP]: RoundingMode.RoundUp
+  [Rounding.ROUND_UP]: RoundingMode.RoundUp,
 }
 
 export class Fraction {
@@ -140,5 +162,12 @@ export class Fraction {
     Big.DP = decimalPlaces
     Big.RM = toFixedRounding[rounding]
     return new Big(this.numerator.toString()).div(this.denominator.toString()).toFormat(decimalPlaces, format)
+  }
+
+  /**
+   * Helper method for converting any super class back to a fraction
+   */
+  public get asFraction(): Fraction {
+    return new Fraction(this.numerator, this.denominator)
   }
 }

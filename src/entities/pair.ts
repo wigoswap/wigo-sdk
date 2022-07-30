@@ -7,8 +7,8 @@ import { getCreate2Address } from '@ethersproject/address'
 
 import {
   BigintIsh,
-  FACTORY_ADDRESS,
-  INIT_CODE_HASH,
+  FACTORY_ADDRESS_MAP,
+  INIT_CODE_HASH_MAP,
   MINIMUM_LIQUIDITY,
   ZERO,
   ONE,
@@ -21,30 +21,31 @@ import { sqrt, parseBigintIsh } from '../utils'
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors'
 import { Token } from './token'
 
-let PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: string } } = {}
+let PAIR_ADDRESS_CACHE: { [key: string]: string } = {}
+
+const composeKey = (token0: Token, token1: Token) => `${token0.chainId}-${token0.address}-${token1.address}`
 
 export class Pair {
   public readonly liquidityToken: Token
   private readonly tokenAmounts: [TokenAmount, TokenAmount]
 
   public static getAddress(tokenA: Token, tokenB: Token): string {
-    const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
+    const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
 
-    if (PAIR_ADDRESS_CACHE?.[tokens[0].address]?.[tokens[1].address] === undefined) {
+    const key = composeKey(token0, token1)
+
+    if (PAIR_ADDRESS_CACHE?.[key] === undefined) {
       PAIR_ADDRESS_CACHE = {
         ...PAIR_ADDRESS_CACHE,
-        [tokens[0].address]: {
-          ...PAIR_ADDRESS_CACHE?.[tokens[0].address],
-          [tokens[1].address]: getCreate2Address(
-            FACTORY_ADDRESS,
-            keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
-            INIT_CODE_HASH
-          )
-        }
+        [key]: getCreate2Address(
+          FACTORY_ADDRESS_MAP[token0.chainId],
+          keccak256(['bytes'], [pack(['address', 'address'], [token0.address, token1.address])]),
+          INIT_CODE_HASH_MAP[token0.chainId]
+        )
       }
     }
 
-    return PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
+    return PAIR_ADDRESS_CACHE[key]
   }
 
   public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount) {

@@ -1,21 +1,22 @@
 import invariant from 'tiny-invariant'
-import { ChainId, WETH as _WETH, TradeType, Rounding, Token, TokenAmount, Pair, Route, Trade } from '../src'
+import JSBI from 'jsbi'
+import { ChainId, WNATIVE as _WETH, TradeType, Rounding, Token, TokenAmount, Pair, Route, Trade } from '../src'
 
 const ADDRESSES = [
   '0x0000000000000000000000000000000000000001',
   '0x0000000000000000000000000000000000000002',
   '0x0000000000000000000000000000000000000003'
 ]
-const CHAIN_ID = ChainId.TESTNET
-const WETH = _WETH[ChainId.TESTNET]
+const CHAIN_ID = ChainId.FANTOM_TESTNET
+const WETH = _WETH[ChainId.FANTOM_TESTNET]
 const DECIMAL_PERMUTATIONS: [number, number, number][] = [
   [0, 0, 0],
   [0, 9, 18],
   [18, 18, 18]
 ]
 
-function decimalize(amount: number, decimals: number): bigint {
-  return BigInt(amount) * BigInt(10) ** BigInt(decimals)
+function decimalize(amount: number, decimals: number): JSBI {
+  return JSBI.multiply(JSBI.BigInt(amount), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals)))
 }
 
 describe('entities', () => {
@@ -156,12 +157,16 @@ describe('entities', () => {
                   new TokenAmount(tokens[1], decimalize(1, tokens[1].decimals)),
                   new TokenAmount(
                     WETH,
-                    decimalize(10, WETH.decimals) +
-                      (tokens[1].decimals === 9 ? BigInt('30090280812437312') : BigInt('30090270812437322'))
+                    JSBI.add(
+                      decimalize(10, WETH.decimals),
+
+                      tokens[1].decimals === 9 ? JSBI.BigInt('30090280812437312') : JSBI.BigInt('30090270812437322')
+                    )
                   )
                 )
               ],
-              tokens[1]
+              tokens[1],
+              WETH
             )
             const outputAmount = new TokenAmount(tokens[1], '1')
             const trade = new Trade(route, outputAmount, TradeType.EXACT_INPUT)

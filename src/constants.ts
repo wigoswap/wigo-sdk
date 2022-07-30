@@ -1,11 +1,13 @@
 import JSBI from 'jsbi'
 
 // exports for external consumption
-export type BigintIsh = JSBI | bigint | string
+export type BigintIsh = JSBI | number | string
 
 export enum ChainId {
-  MAINNET = 250,
-  TESTNET = 4002
+  // ETHEREUM = 1,
+  // RINKEBY = 4,
+  FANTOM = 250,
+  FANTOM_TESTNET = 4002
 }
 
 export enum TradeType {
@@ -21,7 +23,25 @@ export enum Rounding {
 
 export const FACTORY_ADDRESS = '0xC831A5cBfb4aC2Da5ed5B194385DFD9bF5bFcBa7'
 
+// const FACTORY_ADDRESS_ETH = '0xD93801d7D3a368D94A3A32E97A20f7aC1948a5dB'
+
+export const FACTORY_ADDRESS_MAP = {
+  // [ChainId.ETHEREUM]: FACTORY_ADDRESS_ETH,
+  // [ChainId.RINKEBY]: FACTORY_ADDRESS_ETH,
+  [ChainId.FANTOM]: FACTORY_ADDRESS,
+  [ChainId.FANTOM_TESTNET]: '0x6725f303b657a9451d8ba641348b6761a6cc7a17'
+}
+
 export const INIT_CODE_HASH = '0x55c39e9406ff3c89a193882b4752879e73c8a0ce1222fe1de34c5e8f6482d9b6'
+
+// const INIT_CODE_HASH_ETH = '0x57224589c67f3f30a6b0d7a1b54cf3153ab84563bc609ef41dfb34f8b2974d2d'
+
+export const INIT_CODE_HASH_MAP = {
+  // [ChainId.ETHEREUM]: INIT_CODE_HASH_ETH,
+  // [ChainId.RINKEBY]: INIT_CODE_HASH_ETH,
+  [ChainId.FANTOM]: INIT_CODE_HASH,
+  [ChainId.FANTOM_TESTNET]: '0xd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66'
+}
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)
 

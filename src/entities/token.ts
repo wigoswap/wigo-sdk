@@ -65,21 +65,47 @@ export function currencyEquals(currencyA: Currency, currencyB: Currency): boolea
   }
 }
 
-export const WETH = {
-  [ChainId.MAINNET]: new Token(
-    ChainId.MAINNET,
+// export const WETH9 = {
+//   [ChainId.ETHEREUM]: new Token(
+//     ChainId.ETHEREUM,
+//     '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+//     18,
+//     'WETH',
+//     'Wrapped Ether',
+//     'https://weth.io'
+//   ),
+//   [ChainId.RINKEBY]: new Token(
+//     ChainId.RINKEBY,
+//     '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+//     18,
+//     'WETH',
+//     'Wrapped Ether',
+//     'https://weth.io'
+//   )
+// }
+
+export const WFTM = {
+  [ChainId.FANTOM]: new Token(
+    ChainId.FANTOM,
     '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
     18,
     'WFTM',
     'Wrapped Fantom',
     'https://www.fantom.foundation'
   ),
-  [ChainId.TESTNET]: new Token(
-    ChainId.TESTNET,
+  [ChainId.FANTOM_TESTNET]: new Token(
+    ChainId.FANTOM_TESTNET,
     '0xf1277d1Ed8AD466beddF92ef448A132661956621',
     18,
     'WFTM',
     'Wrapped Fantom',
     'https://www.fantom.foundation'
   )
+}
+
+export const WNATIVE = {
+  // [ChainId.ETHEREUM]: WETH9[ChainId.ETHEREUM],
+  // [ChainId.RINKEBY]: WETH9[ChainId.RINKEBY],
+  [ChainId.FANTOM]: WFTM[ChainId.FANTOM],
+  [ChainId.FANTOM_TESTNET]: WFTM[ChainId.FANTOM_TESTNET]
 }
